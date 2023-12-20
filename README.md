@@ -7,7 +7,7 @@
 <h1 class="heading-1"><img align="center" height="50" src="https://user-images.githubusercontent.com/84743905/174507937-c8637dd7-5a10-4c12-bf23-945c7872ace2.png"> Enchanted regex</h1>
 
 
-Dart [regex api](https://api.flutter.dev/flutter/dart-core/RegExp-class.html) is a good solid base of a modern regex implementation. But it still lacks some more complex functions (such as better manipulating groups) and some auxiliary functions. Because of these "problems", this pacakge was created.
+Dart [regex api](https://api.flutter.dev/flutter/dart-core/RegExp-class.html) is a good solid base of a modern regex implementation. But it still lacks some more complex functions (such as better manipulating groups) and some auxiliary functions. Because of these "problems", this package was created.
 
 # • 🔗 Group manipulation
 The auxiliar funcions and extensions that will help us to manipulate and map the named group in a regex match.
