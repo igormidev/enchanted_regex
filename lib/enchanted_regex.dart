@@ -1,25 +1,12 @@
 library;
 
 import 'dart:developer';
-
-import 'package:enchanted_regex/utils.dart';
+import 'package:enchanted_collection/enchanted_collection.dart';
 
 extension MatchExtension on Match {
   /// Return's the text of the match.
   /// This is, the text beetween [Match.start] and [Match.end] indexes.
   String get text => input.substring(start, end);
-}
-
-test() {
-  final String source = 'Hello, my name is <name>';
-  final RegExp regex = RegExp(r'(?<name>\w+)');
-
-  final Iterable<RegExpMatch> matchs = regex.allMatches(source);
-  matchs.printListWithLineBreak();
-  matchs.printList();
-
-  final RegExpMatch? match = regex.firstMatch(source);
-  print(match?.text); // .text atribute
 }
 
 extension EnchantedStringRegexExtension on String {
@@ -356,39 +343,4 @@ extension MatchListExtension on Iterable<Match> {
     });
     log('$prefixMessage\n$list');
   }
-}
-
-class _StringMatch implements Match {
-  const _StringMatch(this.start, this.input, this.pattern);
-
-  @override
-  int get end => start + pattern.length;
-  @override
-  String operator [](int g) => group(g);
-  @override
-  int get groupCount => 0;
-
-  @override
-  String group(int group) {
-    if (group != 0) {
-      throw RangeError.value(group);
-    }
-    return pattern;
-  }
-
-  @override
-  List<String> groups(List<int> groups) {
-    List<String> result = <String>[];
-    for (int g in groups) {
-      result.add(group(g));
-    }
-    return result;
-  }
-
-  @override
-  final int start;
-  @override
-  final String input;
-  @override
-  final String pattern;
 }

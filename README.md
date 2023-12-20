@@ -1,10 +1,11 @@
 <style>
 .heading-1{
-  font-size: 350%!important;
+  font-size: 240%!important;
 }
 </style>
 
-<h1 class="heading-1"><img align="center" height="100" src="https://user-images.githubusercontent.com/84743905/174507937-c8637dd7-5a10-4c12-bf23-945c7872ace2.png"> Enchanted regex</h1>
+<h1 class="heading-1"><img align="center" height="50" src="https://user-images.githubusercontent.com/84743905/174507937-c8637dd7-5a10-4c12-bf23-945c7872ace2.png"> Enchanted regex</h1>
+
 
 Dart [regex api](https://api.flutter.dev/flutter/dart-core/RegExp-class.html) is a good solid base of a modern regex implementation. But it still lacks some more complex functions (such as better manipulating groups) and some auxiliary functions. Because of these "problems", this pacakge was created.
 
@@ -12,7 +13,11 @@ Dart [regex api](https://api.flutter.dev/flutter/dart-core/RegExp-class.html) is
 The auxiliar funcions and extensions that will help us to manipulate and map the named group in a regex match.
 
 ## String extensions
-
+![](https://github.com/igormidev/enchanted_regex/blob/master/art/doc_prints/for_each_named_group.png?raw=true)
+![](https://github.com/igormidev/enchanted_regex/blob/master/art/doc_prints/for_each_named_group_mapper.png?raw=true)
+![](https://github.com/igormidev/enchanted_regex/blob/master/art/doc_prints/replace_all_named_group.png?raw=true)
+![](https://github.com/igormidev/enchanted_regex/blob/master/art/doc_prints/split_map_cast.png?raw=true)
+![](https://github.com/igormidev/enchanted_regex/blob/master/art/doc_prints/split_map_named_group_cast.png?raw=true)
 
 # • 🌟 About `FindedGroup` class. 
 ✨ This class will be used in the main functions of this package.
@@ -30,15 +35,15 @@ Where the `regex match` starts.<br>
 ⚠️ Note: This is not the index where the group starts,
 but where the regex match starts. Thoose values, where
 the match stats and where it ends, are inside the
-[FindedGroup.start] and [FindedGroup.end] variables.<br>
-So, this is equivalent to default dart [Match.start] method.
+`FindedGroup.start` and `FindedGroup.end` variables.<br>
+So, this is equivalent to default dart `Match.start` method.
 - **FindedGroup.globalEnd:**<br>
 Where the `regex match` ends.<br>
 ⚠️ Note: This is not the index where the group ends,
 but where the regex match ends. Thoose values, where
 the match stats and where it ends, are inside the
-[FindedGroup.start] and [FindedGroup.end] variables.<br>
-So, this is equivalent to default dart [Match.end] method.
+`FindedGroup.start` and `FindedGroup.end` variables.<br>
+So, this is equivalent to default dart `Match.end` method.
 - **FindedGroup.start:**<br>
 This is the index where the group starts inside the
 the regex match. Note, this value **is not** the index where
