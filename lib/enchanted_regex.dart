@@ -34,21 +34,6 @@ extension EnchantedStringRegexExtension on String {
     return output;
   }
 
-  /// For each named group found in the text with the
-  /// [regex], will call the [onGroupFind] with the [FindedGroup].
-  void forEachNamedGroup(
-    RegExp regex, {
-    required void Function(FindedGroup group) onGroupFind,
-  }) {
-    final matchs = regex.allMatches(this);
-    matchs.toList().forEach((final RegExpMatch match) {
-      final namedGroups = match.groupsStats(regex.pattern);
-      for (final FindedGroup namedGroup in namedGroups) {
-        onGroupFind(namedGroup);
-      }
-    });
-  }
-
   /// Really close to what [forEachNamedGroup] does, but
   /// with more parameters to help you to know where you are
   /// in the list loop iteration.<br>
@@ -114,6 +99,49 @@ extension EnchantedStringRegexExtension on String {
     return response;
   }
 
+  // void forEachNamedGroup
+
+  // void forEachNamedGroup(
+  //   RegExp regex, {
+  //   required void Function(FindedGroup group) onGroupFind,
+  // }) {
+  //   final matchs = regex.allMatches(this);
+  //   matchs.toList().forEach((final RegExpMatch match) {
+  //     final namedGroups = match.groupsStats(regex.pattern);
+  //     for (final FindedGroup namedGroup in namedGroups) {
+  //       onGroupFind(namedGroup);
+  //     }
+  //   });
+  // }
+
+  /// For each named group found in the text with the
+  /// [regex], will call the [onGroupFind] with the [FindedGroup].
+  void forEachNamedGroup(
+    RegExp regex, {
+    required void Function(FindedGroup group) onMatch,
+    void Function(String text)? onNonMatch,
+  }) {
+    int startIndex = 0;
+    for (final RegExpMatch match in regex.allMatches(this)) {
+      onNonMatch?.call(substring(startIndex, match.start));
+      final findedGroups = match.groupsStats(regex.pattern);
+
+      int groupStartIndex = 0;
+
+      for (final FindedGroup group in findedGroups) {
+        onNonMatch?.call(group.content.substring(groupStartIndex, group.start));
+        onMatch(group);
+        groupStartIndex = group.end;
+
+        onNonMatch?.call(group.content.substring(groupStartIndex));
+      }
+
+      startIndex = match.end;
+    }
+
+    onNonMatch?.call(substring(startIndex));
+  }
+
   /// Equal to [splitMapCast], but instead of [onMatch] using
   /// a [Match] class will use a [FindedGroup] class.
   List<T> splitMapNamedGroupCast<T>(
@@ -143,7 +171,7 @@ extension EnchantedStringRegexExtension on String {
     }
 
     items.add(onNonMatch(substring(startIndex)));
-    return [];
+    return items;
   }
 
   List<T> mapSeparateStats<T>(
@@ -227,6 +255,7 @@ extension EnchantedRegexExtension on RegExpMatch {
 
         final group = FindedGroup(
           content: groupContent,
+          fullMatchText: text,
           name: groupName,
           start: start,
           end: end,
@@ -293,10 +322,15 @@ class FindedGroup {
   /// So, this is equivalent to default dart [Match.end] method.
   final int globalEnd;
 
+  /// The full match of the named group.
+  /// Not only the group content, but the full match of the regex.
+  final String fullMatchText;
+
   /// This is the big star of this package. A class that delivers far away more information about the named group match then normal `Match` or `RegExpMatch` classes.
   const FindedGroup({
     required this.name,
     required this.content,
+    required this.fullMatchText,
     required this.start,
     required this.end,
     required this.globalStart,
@@ -312,6 +346,7 @@ class FindedGroup {
   FindedGroup copyWith({
     String? name,
     String? content,
+    String? fullMatchText,
     int? start,
     int? end,
     int? globalStart,
@@ -320,6 +355,7 @@ class FindedGroup {
     return FindedGroup(
       name: name ?? this.name,
       content: content ?? this.content,
+      fullMatchText: fullMatchText ?? this.fullMatchText,
       start: start ?? this.start,
       end: end ?? this.end,
       globalStart: globalStart ?? this.globalStart,

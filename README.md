@@ -30,6 +30,9 @@ With FindedGroup class you have access to the following parameters:
 The name of the group founded. A.ka. the name of the group in the regex, what stays inside the `<>`.
 - **FindedGroup.content:**<br>
 The content string of the named group founded. *Does not* include the data in negative lookahead/lookbehind. 
+- **FindedGroup.fullMatchText:**<br>
+The full match of the named group.
+Not only the group content, but the full match of the regex.
 - **FindedGroup.globalStart:**<br>
 Where the `regex match` starts.<br>
 ⚠️ Note: This is not the index where the group starts,
