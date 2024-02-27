@@ -122,18 +122,30 @@ extension EnchantedStringRegexExtension on String {
     void Function(String text)? onNonMatch,
   }) {
     int startIndex = 0;
-    for (final RegExpMatch match in regex.allMatches(this)) {
-      onNonMatch?.call(substring(startIndex, match.start));
+    final matchs = regex.allMatches(this);
+    for (final RegExpMatch match in matchs) {
+      final firstStart = substring(startIndex, match.start);
+      onNonMatch?.call(firstStart);
       final findedGroups = match.groupsStats(regex.pattern);
 
       int groupStartIndex = 0;
 
       for (final FindedGroup group in findedGroups) {
-        onNonMatch?.call(group.content.substring(groupStartIndex, group.start));
+        final fullText = group.fullMatchText;
+
+        final beforeMatchString =
+            fullText.substring(groupStartIndex, group.start);
+        if (beforeMatchString.isNotEmpty) {
+          onNonMatch?.call(beforeMatchString);
+        }
         onMatch(group);
         groupStartIndex = group.end;
 
-        onNonMatch?.call(group.content.substring(groupStartIndex));
+        /// Rest of string that dosent include match
+        final String afterMatchString = fullText.substring(group.end);
+        if (afterMatchString.isNotEmpty) {
+          onNonMatch?.call(afterMatchString);
+        }
       }
 
       startIndex = match.end;
@@ -151,20 +163,30 @@ extension EnchantedStringRegexExtension on String {
   }) {
     final List<T> items = [];
     int startIndex = 0;
-    for (final RegExpMatch match in regex.allMatches(this)) {
-      items.add(onNonMatch(substring(startIndex, match.start)));
+    final matchs = regex.allMatches(this);
+    for (final RegExpMatch match in matchs) {
+      final firstStart = substring(startIndex, match.start);
+      items.add(onNonMatch(firstStart));
       final findedGroups = match.groupsStats(regex.pattern);
 
       int groupStartIndex = 0;
 
       for (final FindedGroup group in findedGroups) {
-        items.add(
-          onNonMatch(group.content.substring(groupStartIndex, group.start)),
-        );
+        final fullText = group.fullMatchText;
+
+        final beforeMatchString =
+            fullText.substring(groupStartIndex, group.start);
+        if (beforeMatchString.isNotEmpty) {
+          items.add(onNonMatch(beforeMatchString));
+        }
         items.add(onMatch(group));
         groupStartIndex = group.end;
 
-        items.add(onNonMatch(group.content.substring(groupStartIndex)));
+        /// Rest of string that dosent include match
+        final String afterMatchString = fullText.substring(group.end);
+        if (afterMatchString.isNotEmpty) {
+          items.add(onNonMatch(afterMatchString));
+        }
       }
 
       startIndex = match.end;

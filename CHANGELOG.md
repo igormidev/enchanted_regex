@@ -1,3 +1,6 @@
+## 1.0.5
+* Fix `forEachNamedGroup` and `splitMapNamedGroupCast` not working
+
 ## 1.0.4
 * Added `onNonMatch` optional parameter to `forEachNamedGroup` function
 * Added `fullMatchText` variable to `FindedGroup`
