@@ -99,27 +99,20 @@ extension EnchantedStringRegexExtension on String {
     return response;
   }
 
-  // void forEachNamedGroup
-
-  // void forEachNamedGroup(
-  //   RegExp regex, {
-  //   required void Function(FindedGroup group) onGroupFind,
-  // }) {
-  //   final matchs = regex.allMatches(this);
-  //   matchs.toList().forEach((final RegExpMatch match) {
-  //     final namedGroups = match.groupsStats(regex.pattern);
-  //     for (final FindedGroup namedGroup in namedGroups) {
-  //       onGroupFind(namedGroup);
-  //     }
-  //   });
-  // }
-
   /// For each named group found in the text with the
   /// [regex], will call the [onGroupFind] with the [FindedGroup].
+  ///
+  /// ### * [willContainBeforeAndAfterContentAsNonMatch]<br>
+  /// This parameter will define if the text before and after the content (that is: [FindedGroup.content])
+  /// will be passed to the [onNonMatch] function. If true, the onNonMatch will be called for
+  /// each text before and after the content (if those texts are not empty). If false, the onNonMatch
+  /// will be called only for the texts that are now within the range of the [FindedGroup.globalStart] and
+  /// [FindedGroup.globalEnd].
   void forEachNamedGroup(
     RegExp regex, {
     required void Function(FindedGroup group) onMatch,
     void Function(String text)? onNonMatch,
+    bool willContainBeforeAndAfterContentAsNonMatch = true,
   }) {
     int startIndex = 0;
     final matchs = regex.allMatches(this);
@@ -133,18 +126,22 @@ extension EnchantedStringRegexExtension on String {
       for (final FindedGroup group in findedGroups) {
         final fullText = group.fullMatchText;
 
-        final beforeMatchString =
-            fullText.substring(groupStartIndex, group.start);
-        if (beforeMatchString.isNotEmpty) {
-          onNonMatch?.call(beforeMatchString);
+        if (willContainBeforeAndAfterContentAsNonMatch) {
+          final beforeMatchString =
+              fullText.substring(groupStartIndex, group.start);
+          if (beforeMatchString.isNotEmpty) {
+            onNonMatch?.call(beforeMatchString);
+          }
         }
         onMatch(group);
         groupStartIndex = group.end;
 
-        /// Rest of string that dosent include match
-        final String afterMatchString = fullText.substring(group.end);
-        if (afterMatchString.isNotEmpty) {
-          onNonMatch?.call(afterMatchString);
+        if (willContainBeforeAndAfterContentAsNonMatch) {
+          /// Rest of string that dosent include match
+          final String afterMatchString = fullText.substring(group.end);
+          if (afterMatchString.isNotEmpty) {
+            onNonMatch?.call(afterMatchString);
+          }
         }
       }
 
@@ -156,10 +153,18 @@ extension EnchantedStringRegexExtension on String {
 
   /// Equal to [splitMapCast], but instead of [onMatch] using
   /// a [Match] class will use a [FindedGroup] class.
+  ///
+  /// ### * [willContainBeforeAndAfterContentAsNonMatch]<br>
+  /// This parameter will define if the text before and after the content (that is: [FindedGroup.content])
+  /// will be passed to the [onNonMatch] function. If true, the onNonMatch will be called for
+  /// each text before and after the content (if those texts are not empty). If false, the onNonMatch
+  /// will be called only for the texts that are now within the range of the [FindedGroup.globalStart] and
+  /// [FindedGroup.globalEnd].
   List<T> splitMapNamedGroupCast<T>(
     RegExp regex, {
     required T Function(FindedGroup group) onMatch,
     required T Function(String text) onNonMatch,
+    bool willContainBeforeAndAfterContentAsNonMatch = true,
   }) {
     final List<T> items = [];
     int startIndex = 0;
@@ -173,19 +178,22 @@ extension EnchantedStringRegexExtension on String {
 
       for (final FindedGroup group in findedGroups) {
         final fullText = group.fullMatchText;
-
-        final beforeMatchString =
-            fullText.substring(groupStartIndex, group.start);
-        if (beforeMatchString.isNotEmpty) {
-          items.add(onNonMatch(beforeMatchString));
+        if (willContainBeforeAndAfterContentAsNonMatch) {
+          final beforeMatchString =
+              fullText.substring(groupStartIndex, group.start);
+          if (beforeMatchString.isNotEmpty) {
+            items.add(onNonMatch(beforeMatchString));
+          }
         }
         items.add(onMatch(group));
         groupStartIndex = group.end;
 
-        /// Rest of string that dosent include match
-        final String afterMatchString = fullText.substring(group.end);
-        if (afterMatchString.isNotEmpty) {
-          items.add(onNonMatch(afterMatchString));
+        if (willContainBeforeAndAfterContentAsNonMatch) {
+          /// Rest of string that dosent include match
+          final String afterMatchString = fullText.substring(group.end);
+          if (afterMatchString.isNotEmpty) {
+            items.add(onNonMatch(afterMatchString));
+          }
         }
       }
 
