@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 library;
 
 import 'dart:developer';
+
 import 'package:enchanted_collection/enchanted_collection.dart';
 
 extension MatchExtension on Match {
@@ -111,14 +113,19 @@ extension EnchantedStringRegexExtension on String {
   void forEachNamedGroup(
     RegExp regex, {
     required void Function(FindedGroup group) onMatch,
-    void Function(String text)? onNonMatch,
+    void Function(NonMapContent textContext)? onNonMatch,
     bool willContainBeforeAndAfterContentAsNonMatch = true,
   }) {
     int startIndex = 0;
     final matchs = regex.allMatches(this);
     for (final RegExpMatch match in matchs) {
       final firstStart = substring(startIndex, match.start);
-      onNonMatch?.call(firstStart);
+      // onNonMatch?.call(firstStart);
+      onNonMatch?.call(NonMapContent(
+        content: firstStart,
+        globalStart: startIndex,
+        globalEnd: match.start,
+      ));
       final findedGroups = match.groupsStats(regex.pattern);
 
       int groupStartIndex = 0;
@@ -130,7 +137,14 @@ extension EnchantedStringRegexExtension on String {
           final beforeMatchString =
               fullText.substring(groupStartIndex, group.start);
           if (beforeMatchString.isNotEmpty) {
-            onNonMatch?.call(beforeMatchString);
+            // onNonMatch?.call(beforeMatchString);
+            onNonMatch?.call(
+              NonMapContent(
+                content: beforeMatchString,
+                globalStart: match.start + groupStartIndex,
+                globalEnd: match.start + group.start,
+              ),
+            );
           }
         }
         onMatch(group);
@@ -140,7 +154,13 @@ extension EnchantedStringRegexExtension on String {
           /// Rest of string that dosent include match
           final String afterMatchString = fullText.substring(group.end);
           if (afterMatchString.isNotEmpty) {
-            onNonMatch?.call(afterMatchString);
+            onNonMatch?.call(
+              NonMapContent(
+                content: afterMatchString,
+                globalStart: match.start + group.end,
+                globalEnd: group.globalEnd,
+              ),
+            );
           }
         }
       }
@@ -148,7 +168,14 @@ extension EnchantedStringRegexExtension on String {
       startIndex = match.end;
     }
 
-    onNonMatch?.call(substring(startIndex));
+    // onNonMatch?.call(substring(startIndex));
+    onNonMatch?.call(
+      NonMapContent(
+        content: substring(startIndex),
+        globalStart: startIndex,
+        globalEnd: length,
+      ),
+    );
   }
 
   /// Equal to [splitMapCast], but instead of [onMatch] using
@@ -409,4 +436,15 @@ extension MatchListExtension on Iterable<Match> {
     });
     log('$prefixMessage\n$list');
   }
+}
+
+class NonMapContent {
+  final String content;
+  final int globalStart;
+  final int globalEnd;
+  const NonMapContent({
+    required this.content,
+    required this.globalStart,
+    required this.globalEnd,
+  });
 }

@@ -1,3 +1,6 @@
+## 1.0.7
+* Added more info to "onNonMatch" 
+
 ## 1.0.6
 * Added optional parrameter `willContainBeforeAndAfterContentAsNonMatch` to `forEachNamedGroup` and `splitMapNamedGroupCast`. 
 

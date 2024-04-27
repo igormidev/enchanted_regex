@@ -1,6 +1,6 @@
 name: enchanted_regex
 description: A package that enhances dart regex api. Mainly when working with named group's.
-version: 1.0.6
+version: 1.0.7
 repository: https://github.com/igormidev/enchanted_regex
 issue_tracker: https://github.com/igormidev/enchanted_regex/issues
 
